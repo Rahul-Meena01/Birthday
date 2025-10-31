@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A cheerful birthday card with rotating GIFs, quotes and confetti.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>🎉 Happy Birthday 🎂</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #fff;
+            text-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            animation: glow 2s ease-in-out infinite alternate;
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #fff, 0 0 20px #ff5c8d;
+            }
+
+            to {
+                text-shadow: 0 0 20px #fff, 0 0 40px #ff2e63;
+            }
+        }
+
+        .card {
+            width: 90%;
+            max-width: 400px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            opacity: 0;
+            transform: translateX(40px);
+            /* start blurred, then animate to sharp when .active is added */
+            filter: blur(10px);
+            transition: transform 800ms cubic-bezier(.22, .9, .35, 1), opacity 700ms ease, filter 600ms ease;
+        }
+
+        /* Animate each new card in with a blur-to-sharp motion */
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+                filter: blur(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+                filter: blur(0);
+            }
+        }
+
+        .card.animate {
+            animation: cardIn 700ms cubic-bezier(.22, .9, .35, 1) both;
+        }
+
+        /* Respect user's preference for reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+
+            .card,
+            .card * {
+                transition: none !important;
+                animation: none !important;
+            }
+
+            .card {
+                filter: none !important;
+            }
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .quote {
+            padding: 1rem;
+            font-size: 1.05rem;
+            color: #333;
+            font-style: italic;
+        }
+
+        @media (max-width: 500px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .quote {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🎉 Happy Birthday 🎂</h1>
+    <div class="card" id="card">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Birthday GIF" id="gif"
+            loading="lazy">
+        <p class="quote" id="quote" role="status" aria-live="polite"></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script>
+        const gifs = [
+            "https://media.tenor.com/sWC3gAmKJzgAAAAM/lpg.gif",
+            "https://i.pinimg.com/originals/c4/ff/31/c4ff310ed4399ebe2c85ffc52ad5eeab.gif",
+            "https://media.tenor.com/cd9zqSTIIdUAAAAM/you-brown-bear-me-white-bear-i-loveeee-you.gif",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxnSpnTFnW3NW2LFtBh03jrYj4np_IHX0nYw&s",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTv6_5_18ou9W-MrtjwazGfOOe7EtlnSaKKyHmduQVfO0iuCv8CaIXCUBxRdFTHGr1-CWw&usqp=CAU",
+            "https://media.tenor.com/Fh39BC4pwNAAAAAM/snuggles-snuggle.gif",
+            "https://media.tenor.com/yNFbO-SVaVAAAAAM/panda-bear-brown-bear.gif",
+            "https://i.pinimg.com/originals/57/f0/8a/57f08ab758725d3718bcbc37e4a19dc0.gif",
+            "https://i.pinimg.com/originals/10/8c/22/108c2257683620292f4687262f26e872.gif",
+            "https://media.tenor.com/uYK_2Rqc7swAAAAM/miss-you-hug.gif",
+            "https://i.pinimg.com/originals/de/40/94/de40949ea081adcec05112e98e54ea6c.gif"
+        ];
+
+        const quotes = [
+            "May your birthday be filled with laughter and sunshine!",
+            "Another year of awesomeness — keep shining!",
+            "Wishing you all the love and happiness in the world!",
+            "Your smile is the best gift today — keep spreading it!",
+            "A year older, but forever young at heart!",
+            "Cake calories don’t count on birthdays, so go wild!",
+            "Hope your day sparkles brighter than the candles!",
+            "You deserve the biggest slice of happiness today!",
+            "Cheers to more memories, more adventures, more joy!",
+            "Let’s celebrate you — the world’s favorite human!",
+            "Hugs, snuggles and all the warm fuzzy feelings for you!"
+        ];
+
+        // Shuffle helper
+        const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);
+        shuffle(gifs);
+        shuffle(quotes);
+
+        const card = document.getElementById('card');
+        const gifEl = document.getElementById('gif');
+        const quoteEl = document.getElementById('quote');
+
+        let i = 0;
+        function showCard() {
+            gifEl.src = gifs[i % gifs.length];
+            quoteEl.textContent = quotes[i % quotes.length];
+
+            // Trigger the blur-in animation for every new card.
+            // Remove the class, force reflow, then add it so animation restarts.
+            card.classList.remove('animate');
+            // Force reflow to reset the animation
+            void card.offsetWidth;
+            card.classList.add('animate');
+
+            i++;
+        }
+
+        showCard();
+        setInterval(showCard, 5000);
+
+        // Confetti burst once at start (guarded in case CDN/script fails)
+        function launchConfetti() {
+            if (typeof confetti !== 'function') return;
+            const end = Date.now() + 1500;
+            (function frame() {
+                try {
+                    confetti({
+                        particleCount: 6,
+                        angle: 60,
+                        spread: 60,
+                        origin: { x: 0 }
+                    });
+                    confetti({
+                        particleCount: 6,
+                        angle: 120,
+                        spread: 60,
+                        origin: { x: 1 }
+                    });
+                } catch (e) {
+                    // If confetti throws for any reason, fail silently
+                    return;
+                }
+                if (Date.now() < end) requestAnimationFrame(frame);
+            })();
+        }
+        launchConfetti();
+    </script>
+</body>
+
+</html>
