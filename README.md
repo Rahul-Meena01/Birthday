@@ -12,3 +12,10 @@ Files:
 Feel free to edit or ask me to add an `assets/` folder and place the QR image there.
 
 -- created with ❤️
+
+## Scan to view
+
+Scan the QR code below to open the live birthday wishes page (GitHub Pages). If Pages is not yet enabled for the repo, enable it under Settings → Pages.
+
+[![Scan to view birthday wishes](QRcode_g1.jpeg)](https://Rahul-Meena01.github.io/Birthday)
+
